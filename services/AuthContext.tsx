@@ -3,17 +3,20 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { retrieveUser } from "./docSnap";
+import { logOutService } from "./logout";
 
 interface AuthContext {
     user: User | null;
     userData: any | null;
     loading: boolean;
+    logout: () => void;
 }
 
 const AuthContext = createContext<AuthContext>({
     user: null,
     userData: null,
-    loading: true
+    loading: true,
+    logout: () => { }
 })
 export const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null)
@@ -45,9 +48,15 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
         })
         return () => unsuscribe()
     }, [])
+    const logout = async () => {
+        await logOutService();
+        setUser(null);
+        setUserData(null);
+    }
     return (
-        <AuthContext.Provider value={{ user, userData, loading }}>
+        <AuthContext.Provider value={{ user, userData, loading, logout }}>
             {children}
         </AuthContext.Provider>
     )
 }
+export const useAuth = () => useContext(AuthContext);
