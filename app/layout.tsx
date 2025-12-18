@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { useAuth } from "@/services/AuthContext";
-import { useRouter } from "next/navigation";
+import { AuthContextProvider } from "@/services/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,13 +23,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const router = useRouter();
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {useAuth().user ? children : router.push("/login")}
+        <AuthContextProvider>
+          {children}
+        </AuthContextProvider>
       </body>
     </html>
   );
