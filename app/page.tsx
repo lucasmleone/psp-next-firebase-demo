@@ -1,17 +1,9 @@
 'use client';
 import Link from "next/link";
 import { useAuth } from "@/services/AuthContext";
-import { useState, useEffect } from "react";
 
 export default function Home() {
-  const [userEmail, setUserEmail] = useState<any | null>(null);
-  const { user, logout } = useAuth();
-
-  useEffect(() => {
-    setUserEmail(user?.email);
-  }, [user]);
-
-
+  const { user, logout, userData } = useAuth();
 
   const logOutService = async () => {
     await logout();
@@ -20,7 +12,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-900 text-white font-sans selection:bg-purple-500 selection:text-white">
 
-      {/* --- NAVBAR --- */}
+
       <nav className="fixed w-full z-50 top-0 start-0 border-b border-white/10 bg-slate-900/80 backdrop-blur-md">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
@@ -31,7 +23,7 @@ export default function Home() {
           </Link>
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
             {user ? (<div className="flex items-center space-x-3">
-              <p>Hola {userEmail}</p>
+              <p>Hola {user.email}</p>
 
               <button
                 onClick={logOutService}
@@ -94,10 +86,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-white sm:text-4xl">Elige tu transformación</h2>
-            <p className="mt-4 text-lg text-slate-400">Selecciona el plan que mejor se adapte a tus objetivos.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="flex justify-center max-w-4xl mx-auto">
             {/* PLAN BASICO */}
             <div className="relative p-8 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-sm hover:border-purple-500/50 transition-all duration-300 flex flex-col">
               <div className="mb-4">
@@ -113,43 +104,21 @@ export default function Home() {
                 <li className="flex items-center"><svg className="w-5 h-5 text-purple-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>Soporte por email</li>
               </ul>
 
-              {/* DESAFÍO DE LÓGICA AQUÍ: 
-                        Al hacer click, debe verificar Auth.
-                    */}
-              <button
-                className="w-full py-3 px-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition-colors border border-white/10"
-                onClick={() => alert("Lógica pendiente: Validar sesión -> Ir a checkout")}
-              >
-                Comenzar Ahora
-              </button>
-            </div>
+              {userData.isPremium ? (
+                <button
+                  className="w-full py-3 px-4 bg-gray-400 text-white font-semibold rounded-xl shadow-lg cursor-not-allowed"
+                >
+                  Suscrito
+                </button>) : (
+                <button
+                  className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-xl transition-all shadow-lg"
+                  onClick={() => alert("Lógica pendiente: Validar sesión -> Ir a checkout")}
+                >
+                  Contratar Plan
+                </button>
+              )}
 
-            {/* PLAN EMPRESAS */}
-            <div className="relative p-8 bg-gradient-to-b from-purple-900/20 to-slate-900/50 border border-purple-500/30 rounded-2xl backdrop-blur-sm hover:scale-[1.02] transition-transform duration-300 flex flex-col shadow-xl shadow-purple-900/20">
-              <div className="absolute top-0 right-0 bg-purple-600 text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">POPULAR</div>
-              <div className="mb-4">
-                <h3 className="text-xl font-semibold text-white">Empresarial PRO</h3>
-                <p className="text-slate-400 mt-2">Equipos y alto rendimiento.</p>
-              </div>
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-white">$199</span>
-                <span className="text-slate-400">/mes</span>
-              </div>
-              <ul className="space-y-4 mb-8 flex-1 text-slate-300">
-                <li className="flex items-center"><svg className="w-5 h-5 text-pink-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>4 sesiones mensuales</li>
-                <li className="flex items-center"><svg className="w-5 h-5 text-pink-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>Soporte prioritario 24/7</li>
-                <li className="flex items-center"><svg className="w-5 h-5 text-pink-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>Acceso a cursos</li>
-              </ul>
 
-              {/* DESAFÍO DE LÓGICA AQUÍ: 
-                        Mismo botón, diferente destino (posiblemente).
-                    */}
-              <button
-                className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-xl transition-all shadow-lg"
-                onClick={() => alert("Lógica pendiente: Validar sesión -> Ir a checkout")}
-              >
-                Contratar Plan
-              </button>
             </div>
           </div>
         </div>
